@@ -24,10 +24,6 @@ server.on('close', () => {
 	console.log('Server has been closed')
 })
 
-server.on('request', (req, res) => {
-	console.log('Request received')
-})
-
 server.on('listening', () => {
 	console.log('Server is listening')
 })

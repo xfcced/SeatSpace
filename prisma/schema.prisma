@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model comment {
+  id          Int       @id @default(autoincrement())
+  show_id     Int?
+  seat_id     Int?
+  content     String?
+  rating_seat Float?    @default(0)
+  rating_show Float?    @default(0)
+  create_time DateTime? @default(now()) @db.Timestamp(6)
+  seat        seat?     @relation(fields: [seat_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show        show?     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model hall {
+  id          Int       @id @default(autoincrement())
+  theater_id  Int
+  name        String    @db.VarChar(255)
+  create_time DateTime? @default(now()) @db.Timestamp(6)
+  theater     theater   @relation(fields: [theater_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  seat        seat[]
+  show        show[]
+}
+
+model image {
+  id          Int                @id @default(autoincrement())
+  object_id   Int
+  object_type rating_object_type
+  name        String?            @db.VarChar(255)
+  path        String?            @db.VarChar(255)
+  create_time DateTime?          @default(now()) @db.Timestamp(6)
+}
+
+model rating {
+  id             Int                @id @default(autoincrement())
+  object_id      Int
+  rating_sum     Float              @default(0)
+  rating_count   Int                @default(0)
+  object_type    rating_object_type
+  current_rating Float?             @default(0)
+  create_time    DateTime?          @default(now()) @db.Timestamp(6)
+}
+
+model seat {
+  id          Int       @id @default(autoincrement())
+  hall_id     Int?
+  row_no      Int
+  seat_no     Int
+  create_time DateTime? @default(now()) @db.Timestamp(6)
+  comment     comment[]
+  hall        hall?     @relation(fields: [hall_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model show {
+  id          Int       @id @default(autoincrement())
+  theater_id  Int?
+  hall_id     Int?
+  name        String    @db.VarChar(255)
+  start_time  DateTime? @default(now()) @db.Timestamp(0)
+  description String?
+  create_time DateTime? @default(now()) @db.Timestamp(6)
+  comment     comment[]
+  hall        hall?     @relation(fields: [hall_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  theater     theater?  @relation(fields: [theater_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model theater {
+  id          Int                  @id @default(autoincrement())
+  name        String               @db.VarChar(50)
+  description String
+  address     String
+  coordinate  Unsupported("point")
+  create_time DateTime             @default(now()) @db.Timestamp(6)
+  hall        hall[]
+  show        show[]
+}
+
+enum rating_object_type {
+  show
+  theater
+  seat
+}
