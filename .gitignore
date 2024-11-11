@@ -2,3 +2,4 @@
 package-lock.json
 apiTest.rest
 .env
+test.js

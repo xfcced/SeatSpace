@@ -36,6 +36,9 @@ model image {
   name        String?            @db.VarChar(255)
   path        String?            @db.VarChar(255)
   create_time DateTime?          @default(now()) @db.Timestamp(6)
+  show        show?              @relation(fields: [object_id], references: [id], map: "image_object_id_show_fkey")
+  theater     theater?           @relation(fields: [object_id], references: [id], map: "image_object_id_theater_fkey")
+  seat        seat?              @relation(fields: [object_id], references: [id], map: "image_object_id_seat_fkey")
 }
 
 model rating {
@@ -56,6 +59,7 @@ model seat {
   create_time DateTime? @default(now()) @db.Timestamp(6)
   comment     comment[]
   hall        hall?     @relation(fields: [hall_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image[]
 }
 
 model show {
@@ -69,6 +73,7 @@ model show {
   comment     comment[]
   hall        hall?     @relation(fields: [hall_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   theater     theater?  @relation(fields: [theater_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image[]
 }
 
 model theater {
@@ -80,6 +85,7 @@ model theater {
   create_time DateTime             @default(now()) @db.Timestamp(6)
   hall        hall[]
   show        show[]
+  image       image[]
 }
 
 enum rating_object_type {
