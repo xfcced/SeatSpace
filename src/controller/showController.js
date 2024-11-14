@@ -1,4 +1,3 @@
-const e = require('express')
 const prisma = require('../service/prismaClient')
 
 async function getRecentShows(req, res) {
@@ -55,6 +54,16 @@ async function getRecentShows(req, res) {
 	}
 }
 
+function getSeatLayout(req, res) {
+	res.json('get seat layout')
+}
+
+function getShowDetail(req, res) {
+	res.json('get show comments')
+}
+
 module.exports = {
 	getRecentShows,
+	getSeatLayout,
+	getShowDetail,
 }

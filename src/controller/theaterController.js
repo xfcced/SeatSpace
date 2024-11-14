@@ -2,7 +2,6 @@ const prisma = require('../service/prismaClient')
 
 async function getNearbyTheaters(req, res) {
 	try {
-		console.log('get nearby theaters controller called')
 		const { latitude, longitude } = req.query
 		const locations = await getLocations(latitude, longitude)
 
@@ -32,6 +31,11 @@ async function getLocations(latitude, longitude) {
 	return locations
 }
 
+function getTheaterDetailById(req, res) {
+	res.json('get theater detail by id')
+}
+
 module.exports = {
 	getNearbyTheaters,
+	getTheaterDetailById,
 }
