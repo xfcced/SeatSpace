@@ -1,5 +1,5 @@
 function search(req, res) {
-	res.json('searching for seats')
+	res.send('searching for seats')
 }
 
 module.exports = {

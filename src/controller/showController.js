@@ -50,7 +50,7 @@ async function getRecentShows(req, res) {
 		res.json(resData)
 	} catch (error) {
 		console.log(error)
-		res.json('error fetching recent shows')
+		res.status(500).json({ message: 'error fetching recent shows' })
 	}
 }
 

@@ -1,11 +1,15 @@
 const express = require('express')
 const http = require('http')
 const route = require('./src/route/index')
+const cros = require('cors')
+const errorHandler = require('./src/middleware/errorHandler')
 
 // create express app
 const app = express()
+app.use(cros())
 app.use(express.json())
 app.use('/', route)
+app.use(errorHandler)
 
 // create http server
 const PORT = process.env.SEATSPACE_SERVER_PORT || 80
@@ -18,12 +22,4 @@ server.listen(PORT, () => {
 
 server.on('error', (error) => {
 	console.error('Error starting server:', error)
-})
-
-server.on('close', () => {
-	console.log('Server has been closed')
-})
-
-server.on('listening', () => {
-	console.log('Server is listening')
 })

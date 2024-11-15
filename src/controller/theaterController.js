@@ -17,7 +17,7 @@ async function getNearbyTheaters(req, res) {
 		res.json(resData)
 	} catch (error) {
 		console.log(error)
-		res.send('Error fetching nearby theaters')
+		res.status(500).json({ message: 'Error fetching nearby theaters' })
 	}
 }
 
