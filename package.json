@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "nodemon app.js",
-		"prisma client init": "npx prisma generate"
+		"init-db-client": "npx prisma generate"
 	},
 	"author": "seatspace",
 	"license": "ISC",
