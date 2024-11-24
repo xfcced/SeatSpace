@@ -54,8 +54,85 @@ async function getRecentShows(req, res) {
 	}
 }
 
-function getSeatLayout(req, res) {
-	res.json('get seat layout')
+async function getSeatLayout(req, res) {
+	try {
+		const showId = parseInt(req.params.showId)
+		console.log('Get Seat Layout Called with show id: ', showId)
+
+		// find hall id of the show
+		const showInfo = await prisma.show.findUnique({
+			where: {
+				id: showId,
+			},
+			select: {
+				hall_id: true,
+			},
+		})
+		const hallId = showInfo.hall_id
+		console.log('Hall Id: ', hallId)
+
+		// find all seats and zones of this hall
+		const seatsQuery = prisma.seat.findMany({
+			where: {
+				hall_id: hallId,
+			},
+			select: {
+				id: true,
+				row_no: true,
+				seat_no: true,
+				zone_id: true,
+				rating: {
+					select: {
+						current_rating: true,
+					},
+				},
+			},
+		})
+
+		const zonesQuery = prisma.zone.findMany({
+			where: {
+				hall_id: hallId,
+			},
+			select: {
+				id: true,
+				zone_offset_x: true,
+				zone_offset_y: true,
+				rotation: true,
+			},
+		})
+
+		// query for seats and zones in parallel
+		const [seats, zones] = await Promise.all([seatsQuery, zonesQuery])
+		console.log('Seats: ', seats)
+		console.log('Zones: ', zones)
+
+		// create a hash map for zones by id
+		const zoneMap = {}
+		zones.forEach((zone) => {
+			zoneMap[zone.id] = {
+				zoneId: zone.id,
+				zoneOffsetX: zone.zone_offset_x,
+				zoneOffsetY: zone.zone_offset_y,
+				rotation: zone.rotation,
+				seats: [],
+			}
+		})
+
+		// assign each seat to its zone
+		seats.forEach((seat) => {
+			const zoneId = seat.zone_id
+			if (zoneMap[zoneId]) {
+				zoneMap[zoneId].seats.push([seat.id, seat.rating.length > 0 ? seat.rating[0].current_rating : 0, seat.row_no, seat.seat_no])
+			} else {
+				console.warn(`Zone with id ${zoneId} not found.`)
+			}
+		})
+
+		res.json(Object.values(zoneMap))
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'error fetching seat layout' })
+	}
 }
 
 function getShowDetail(req, res) {

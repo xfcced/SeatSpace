@@ -3,3 +3,4 @@ package-lock.json
 apiTest.rest
 .env
 test.js
+*DS_store
