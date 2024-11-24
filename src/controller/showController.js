@@ -103,8 +103,6 @@ async function getSeatLayout(req, res) {
 
 		// query for seats and zones in parallel
 		const [seats, zones] = await Promise.all([seatsQuery, zonesQuery])
-		console.log('Seats: ', seats)
-		console.log('Zones: ', zones)
 
 		// create a hash map for zones by id
 		const zoneMap = {}
