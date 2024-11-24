@@ -135,12 +135,120 @@ async function getSeatLayout(req, res) {
 	}
 }
 
-function getShowDetail(req, res) {
-	res.json('get show comments')
+async function getShowComments(req, res) {
+	try {
+		const showId = parseInt(req.params.showId)
+		console.log('Get Show Detail Called with show id: ', showId)
+
+		// find all comments of this show
+		const comments = await prisma.comment.findMany({
+			where: {
+				show_id: showId,
+			},
+			select: {
+				id: true,
+				content: true,
+				rating_show: true,
+				create_time: true,
+				comment_image: {
+					select: {
+						image: {
+							where: {
+								object_type: 'seat',
+							},
+							select: {
+								path: true,
+							},
+						},
+					},
+					orderBy: {
+						sequence: 'asc',
+					},
+				},
+			},
+		})
+
+		// format the response data
+		const resData = []
+		comments.forEach((comment) => {
+			const resItem = {
+				id: comment.id,
+				comment: comment.content,
+				rating: comment.rating_show,
+				date: comment.create_time,
+				imgUrl: comment.comment_image.map((img) => img.image.path),
+			}
+
+			resData.push(resItem)
+		})
+
+		res.json(resData)
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'error fetching show detail' })
+	}
+}
+
+async function getShowBasicInfo(req, res) {
+	try {
+		const showId = parseInt(req.params.showId)
+		console.log('Get Show Basic Info Called with show id: ', showId)
+
+		const showInfo = await prisma.show.findUnique({
+			where: {
+				id: showId,
+			},
+			select: {
+				id: true,
+				name: true,
+				hall: {
+					select: {
+						name: true,
+					},
+				},
+				theater: {
+					select: {
+						name: true,
+					},
+				},
+				start_time: true,
+				rating: {
+					select: {
+						current_rating: true,
+					},
+				},
+				image: {
+					where: {
+						object_type: 'show',
+					},
+					select: {
+						id: true,
+						path: true,
+					},
+				},
+			},
+		})
+
+		const resData = {
+			showId: showInfo.id,
+			showName: showInfo.name,
+			hall: showInfo.hall.name,
+			theater: showInfo.theater.name,
+			startTime: showInfo.start_time,
+			rating: showInfo.rating.length > 0 ? showInfo.rating[0].current_rating : 0,
+			imgUrl: showInfo.image.length > 0 ? showInfo.image[0].path : '',
+		}
+
+		res.json(resData)
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'error fetching show basic info' })
+	}
 }
 
 module.exports = {
 	getRecentShows,
 	getSeatLayout,
-	getShowDetail,
+	getShowComments,
+	getShowBasicInfo,
 }

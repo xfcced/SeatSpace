@@ -8,8 +8,9 @@ const commentController = require('../controller/commentController')
 
 // show routes
 router.get('/show/recent', showController.getRecentShows)
-router.get('/show/seat/:showId', showController.getSeatLayout)
-router.get('/show/detail/:showId', showController.getShowDetail)
+router.get('/show/layout/:showId', showController.getSeatLayout)
+router.get('/show/comment/:showId', showController.getShowComments)
+router.get('/show/basic/:showId', showController.getShowBasicInfo)
 
 // theater routes
 router.get('/theater/nearby', theaterController.getNearbyTheaters)

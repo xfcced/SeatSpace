@@ -8,15 +8,16 @@ datasource db {
 }
 
 model comment {
-  id          Int       @id @default(autoincrement())
-  show_id     Int?
-  seat_id     Int?
-  content     String?
-  rating_seat Float?    @default(0)
-  rating_show Float?    @default(0)
-  create_time DateTime? @default(now()) @db.Timestamp(6)
-  seat        seat?     @relation(fields: [seat_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show        show?     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id            Int             @id @default(autoincrement())
+  show_id       Int?
+  seat_id       Int?
+  content       String?
+  rating_seat   Float?          @default(0)
+  rating_show   Float?          @default(0)
+  create_time   DateTime?       @default(now()) @db.Timestamp(6)
+  seat          seat?           @relation(fields: [seat_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show          show?           @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  comment_image comment_image[]
 }
 
 model hall {
@@ -31,15 +32,16 @@ model hall {
 }
 
 model image {
-  id          Int                @id @default(autoincrement())
-  object_id   Int
-  object_type rating_object_type
-  name        String?            @db.VarChar(255)
-  path        String?            @db.VarChar(255)
-  create_time DateTime?          @default(now()) @db.Timestamp(6)
-  show        show?              @relation(fields: [object_id], references: [id], map: "image_object_id_show_fkey")
-  theater     theater?           @relation(fields: [object_id], references: [id], map: "image_object_id_theater_fkey")
-  seat        seat?              @relation(fields: [object_id], references: [id], map: "image_object_id_seat_fkey")
+  id            Int                @id @default(autoincrement())
+  object_id     Int
+  object_type   rating_object_type
+  name          String?            @db.VarChar(255)
+  path          String?            @db.VarChar(255)
+  create_time   DateTime?          @default(now()) @db.Timestamp(6)
+  show          show?              @relation(fields: [object_id], references: [id], map: "image_object_id_show_fkey")
+  theater       theater?           @relation(fields: [object_id], references: [id], map: "image_object_id_theater_fkey")
+  seat          seat?              @relation(fields: [object_id], references: [id], map: "image_object_id_seat_fkey")
+  comment_image comment_image[]
 }
 
 model rating {
@@ -112,4 +114,14 @@ model zone {
   create_time   DateTime? @default(now()) @db.Timestamp(6)
   seat          seat[]
   hall          hall?     @relation(fields: [hall_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model comment_image {
+  id          Int       @id @default(autoincrement())
+  comment_id  Int
+  image_id    Int
+  sequence    Int       @default(0)
+  create_time DateTime? @default(now()) @db.Timestamp(6)
+  comment     comment?  @relation(fields: [comment_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image?    @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
