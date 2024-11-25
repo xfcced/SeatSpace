@@ -3,10 +3,12 @@ const http = require('http')
 const route = require('./src/route/index')
 const cros = require('cors')
 const errorHandler = require('./src/middleware/errorHandler')
+const staticHolder = require('./src/middleware/staticHolder')
 
 // create express app
 const app = express()
 app.use(cros())
+app.use(staticHolder)
 app.use(express.json())
 app.use('/', route)
 app.use(errorHandler)
