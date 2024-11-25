@@ -14,7 +14,8 @@ router.get('/show/basic/:showId', showController.getShowBasicInfo)
 
 // theater routes
 router.get('/theater/nearby', theaterController.getNearbyTheaters)
-router.get('/theater/:theater_id', theaterController.getTheaterDetailById)
+router.get('/theater/shows/:theater_id', theaterController.getShowListByTheaterId)
+router.get('/theater/basic/:theater_id', theaterController.getTheaterBaiscInfo)
 
 // search routes
 router.get('/search', searchController.search)

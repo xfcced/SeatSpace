@@ -25,17 +25,97 @@ async function getLocations(latitude, longitude) {
 	latitude = parseFloat(latitude)
 	longitude = parseFloat(longitude)
 
+	// prisma can't handle the point type, so we have to use $queryRaw with raw sql
 	const locations =
-		await prisma.$queryRaw`SELECT t.id, t.name, t.description, t.address , t.coordinate <-> point(${latitude}, ${longitude}) AS distance , i.path as img_url FROM theater t LEFT JOIN image i ON t.id = i.object_id AND i.object_type = 'theater' ORDER BY distance;`
+		await prisma.$queryRaw`SELECT t.id, t.name, t.description, t.address , t.coordinate <-> point(${latitude}, ${longitude}) AS distance , i.path as img_url FROM theater t LEFT JOIN image i ON t.id = i.object_id AND i.object_type = 'theater' ORDER BY distance limit 20;`
 
 	return locations
 }
 
-function getTheaterDetailById(req, res) {
-	res.json('get theater detail by id')
+async function getShowListByTheaterId(req, res) {
+	try {
+		const theaterId = parseInt(req.params.theater_id)
+		const page = parseInt(req.query.page) || 1
+		const pageSize = 10
+		console.log('query show list by theater id:', theaterId, 'page:', page)
+
+		const showList = await prisma.show.findMany({
+			where: {
+				theater_id: theaterId,
+			},
+			orderBy: {
+				start_time: 'asc',
+			},
+			skip: (page - 1) * pageSize,
+			include: {
+				hall: {
+					select: {
+						name: true,
+					},
+				},
+				image: {
+					where: {
+						object_type: 'show',
+					},
+					select: {
+						path: true,
+					},
+				},
+				rating: {
+					where: {
+						object_type: 'show',
+					},
+					select: {
+						current_rating: true,
+					},
+				},
+			},
+		})
+
+		const resData = showList.map((show) => {
+			return {
+				showId: show.id,
+				showName: show.name,
+				hall: show.hall.name,
+				startTime: show.start_time,
+				rating: show.rating.length > 0 ? show.rating[0].current_rating : 0,
+				imgUrl: show.image.length > 0 ? show.image[0].path : '',
+			}
+		})
+
+		res.json(resData)
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'Error fetching theater detail' })
+	}
+}
+
+async function getTheaterBaiscInfo(req, res) {
+	try {
+		const theaterId = parseInt(req.params.theater_id)
+
+		const theater = await prisma.theater.findUnique({
+			where: {
+				id: theaterId,
+			},
+		})
+
+		const resData = {
+			id: theater.id,
+			name: theater.name,
+			description: theater.description,
+			address: theater.address,
+		}
+
+		res.json(resData)
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'Error fetching theater basic info' })
+	}
 }
 
 module.exports = {
 	getNearbyTheaters,
-	getTheaterDetailById,
+	getShowListByTheaterId,
+	getTheaterBaiscInfo,
 }
