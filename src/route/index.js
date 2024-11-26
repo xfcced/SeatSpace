@@ -5,6 +5,7 @@ const searchController = require('../controller/searchController')
 const seatController = require('../controller/seatController')
 const imageController = require('../controller/imageController')
 const commentController = require('../controller/commentController')
+const imageHandler = require('../middleware/imageHandler')
 
 // show routes
 router.get('/show/recent', showController.getRecentShows)
@@ -24,7 +25,7 @@ router.get('/search', searchController.search)
 router.get('/seat/:seatId', seatController.getSeatComments)
 
 // image routes
-router.post('/image/new', imageController.uploadImage)
+router.post('/image/new', imageHandler.single('file'), imageController.uploadImage)
 
 // comment routes
 router.post('/comment/new', commentController.createComment)

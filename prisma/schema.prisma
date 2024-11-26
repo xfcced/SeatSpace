@@ -33,11 +33,11 @@ model hall {
 
 model image {
   id            Int                @id @default(autoincrement())
-  object_id     Int
+  object_id     Int?
   object_type   rating_object_type
-  name          String?            @db.VarChar(255)
-  path          String?            @db.VarChar(255)
-  create_time   DateTime?          @default(now()) @db.Timestamp(6)
+  name          String             @db.VarChar(255)
+  path          String             @db.VarChar(255)
+  create_time   DateTime           @default(now()) @db.Timestamp(6)
   show          show?              @relation(fields: [object_id], references: [id], map: "image_object_id_show_fkey")
   theater       theater?           @relation(fields: [object_id], references: [id], map: "image_object_id_theater_fkey")
   seat          seat?              @relation(fields: [object_id], references: [id], map: "image_object_id_seat_fkey")
