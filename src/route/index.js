@@ -25,7 +25,7 @@ router.get('/search', searchController.search)
 router.get('/seat/:seatId', seatController.getSeatComments)
 
 // image routes
-router.post('/image/new', imageHandler.single('file'), imageController.uploadImage)
+router.post('/image/new', imageHandler.array('file', 5), imageController.uploadImage)
 
 // comment routes
 router.post('/comment/new', commentController.createComment)
