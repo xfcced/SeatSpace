@@ -7,8 +7,8 @@ async function createComment(req, res) {
 		const commentData = req.body
 		commentData.showId = parseInt(commentData.showId)
 		commentData.seatId = parseInt(commentData.seatId)
-		commentData.showRating = parseInt(commentData.showRating)
-		commentData.seatRating = parseInt(commentData.seatRating)
+		commentData.showRating = parseFloat(commentData.showRating)
+		commentData.seatRating = parseFloat(commentData.seatRating)
 
 		console.log('create comment with showId: ', commentData.showId, ' and seatId: ', commentData.seatId)
 
