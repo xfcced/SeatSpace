@@ -42,6 +42,7 @@ model image {
   theater       theater?           @relation(fields: [object_id], references: [id], map: "image_object_id_theater_fkey")
   seat          seat?              @relation(fields: [object_id], references: [id], map: "image_object_id_seat_fkey")
   comment_image comment_image[]
+  origin_name   String?            @default("default_image_name") @db.VarChar(255)
 }
 
 model rating {

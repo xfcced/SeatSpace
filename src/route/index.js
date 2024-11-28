@@ -3,7 +3,6 @@ const showController = require('../controller/showController')
 const theaterController = require('../controller/theaterController')
 const searchController = require('../controller/searchController')
 const seatController = require('../controller/seatController')
-const imageController = require('../controller/imageController')
 const commentController = require('../controller/commentController')
 const imageHandler = require('../middleware/imageHandler')
 
@@ -24,10 +23,7 @@ router.get('/search', searchController.search)
 // seat routes
 router.get('/seat/:seatId', seatController.getSeatComments)
 
-// image routes
-router.post('/image/new', imageHandler.array('file', 5), imageController.uploadImage)
-
 // comment routes
-router.post('/comment/new', commentController.createComment)
+router.post('/comment/new', imageHandler.array('images', 5), commentController.createComment)
 
 module.exports = router
