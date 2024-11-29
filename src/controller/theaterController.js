@@ -44,9 +44,10 @@ async function getShowListByTheaterId(req, res) {
 				theater_id: theaterId,
 			},
 			orderBy: {
-				start_time: 'asc',
+				start_time: 'desc',
 			},
 			skip: (page - 1) * pageSize,
+			take: pageSize,
 			include: {
 				hall: {
 					select: {
