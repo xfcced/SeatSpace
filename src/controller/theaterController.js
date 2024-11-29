@@ -93,19 +93,33 @@ async function getShowListByTheaterId(req, res) {
 
 async function getTheaterBaiscInfo(req, res) {
 	try {
+		console.log('query theater basic info by id:', req.params.theater_id)
 		const theaterId = parseInt(req.params.theater_id)
 
 		const theater = await prisma.theater.findUnique({
 			where: {
 				id: theaterId,
 			},
+			include: {
+				image: {
+					where: {
+						object_type: 'theater',
+					},
+					select: {
+						path: true,
+					},
+				},
+			},
 		})
+
+		console.log('theater:', theater)
 
 		const resData = {
 			id: theater.id,
 			name: theater.name,
 			description: theater.description,
 			address: theater.address,
+			imgUrl: theater.image[0].path || '',
 		}
 
 		res.json(resData)
