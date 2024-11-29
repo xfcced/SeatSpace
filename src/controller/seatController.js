@@ -37,6 +37,8 @@ async function getSeatComments(req, res) {
 		}
 
 		comments.forEach((comment) => {
+			if (!comment.comment_image || comment.comment_image.length === 0) return
+
 			const item = {
 				imgUrl: comment.comment_image[0].image.path,
 				rating: comment.rating_seat,
