@@ -138,11 +138,16 @@ async function getShowComments(req, res) {
 		const showId = parseInt(req.params.showId)
 		console.log('Get Show Detail Called with show id: ', showId)
 
+		const page = req.query.page || 1
+		const pageSize = 10
+
 		// find all comments of this show
 		const comments = await prisma.comment.findMany({
 			where: {
 				show_id: showId,
 			},
+			take: pageSize,
+			skip: (page - 1) * pageSize,
 			select: {
 				id: true,
 				content: true,

@@ -5,10 +5,15 @@ async function getSeatComments(req, res) {
 		const seatId = parseInt(req.params.seatId)
 		console.log('Get Seat Comments Called with seat id: ', seatId)
 
+		const page = req.query.page || 1
+		const pageSize = 10
+
 		const comments = await prisma.comment.findMany({
 			where: {
 				seat_id: seatId,
 			},
+			take: pageSize,
+			skip: (page - 1) * pageSize,
 			select: {
 				// id: true,
 				rating_seat: true,
