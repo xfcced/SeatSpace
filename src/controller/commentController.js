@@ -44,6 +44,7 @@ async function createComment(req, res) {
 		currentRating.forEach((rating) => {
 			ratingHash[rating.object_type] = rating
 		})
+		console.log('ratingHash:', ratingHash)
 
 		// create comment transaction
 		// 2. create comment and link images

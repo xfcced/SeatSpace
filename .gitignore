@@ -3,3 +3,4 @@ apiTest.rest
 .env
 test.js
 *DS_store
+/fake

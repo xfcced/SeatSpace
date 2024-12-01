@@ -60,7 +60,7 @@ model rating {
 
 model seat {
   id          Int       @id @default(autoincrement())
-  hall_id     Int?
+  hall_id     Int
   row_no      Int
   seat_no     Int
   create_time DateTime? @default(now()) @db.Timestamp(6)
