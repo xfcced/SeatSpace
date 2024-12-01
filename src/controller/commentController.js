@@ -30,21 +30,24 @@ async function createComment(req, res) {
 		const imgList = buildImgList(req.files)
 
 		// get current rating
-		const currentRating = await prisma.rating.findMany({
+		const showRatingQuery = prisma.rating.findUnique({
 			where: {
-				object_id: {
-					in: [commentData.showId, commentData.seatId],
-				},
-				object_type: {
-					in: ['show', 'seat'],
-				},
+				object_id: commentData.showId,
+				object_type: 'show',
 			},
 		})
-		const ratingHash = {}
-		currentRating.forEach((rating) => {
-			ratingHash[rating.object_type] = rating
+		const seatRatingQuery = prisma.rating.findUnique({
+			where: {
+				object_id: commentData.seatId,
+				object_type: 'seat',
+			},
 		})
-		console.log('ratingHash:', ratingHash)
+
+		const ratingResult = await Promise.all([showRatingQuery, seatRatingQuery])
+		const ratingHash = {
+			show: ratingResult[0],
+			seat: ratingResult[1],
+		}
 
 		// create comment transaction
 		// 2. create comment and link images
