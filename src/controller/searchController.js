@@ -1,4 +1,5 @@
 const prisma = require('../service/prismaClient')
+const dayjs = require('dayjs')
 
 async function search(req, res) {
 	const searchContent = req.query.search_content
@@ -14,7 +15,7 @@ async function search(req, res) {
 					showId: item.show_id,
 					showName: item.show_name,
 					hall: item.theater_name + item.hall_name,
-					startTime: item.start_time,
+					startTime: dayjs(item.start_time).format('YYYY-MM-DD HH:mm'),
 					rating: item.current_rating,
 					imgUrl: item.path,
 				},

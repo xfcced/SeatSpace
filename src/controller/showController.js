@@ -1,4 +1,5 @@
 const prisma = require('../service/prismaClient')
+const dayjs = require('dayjs')
 
 async function getRecentShows(req, res) {
 	try {
@@ -169,6 +170,9 @@ async function getShowComments(req, res) {
 					},
 				},
 			},
+			orderBy: {
+				create_time: 'desc',
+			},
 		})
 
 		// format the response data
@@ -178,7 +182,7 @@ async function getShowComments(req, res) {
 				id: comment.id,
 				comment: comment.content,
 				rating: comment.rating_show,
-				date: comment.create_time,
+				date: dayjs(comment.create_time).format('YYYY-MM-DD HH:mm'),
 				imgUrl: comment.comment_image.map((img) => img.image.path),
 			}
 
@@ -237,7 +241,7 @@ async function getShowBasicInfo(req, res) {
 			showName: showInfo.name,
 			hall: showInfo.hall.name,
 			theater: showInfo.theater.name,
-			startTime: showInfo.start_time,
+			startTime: dayjs(showInfo.start_time).format('YYYY-MM-DD HH:mm'),
 			rating: showInfo.rating.length > 0 ? showInfo.rating[0].current_rating : 0,
 			imgUrl: showInfo.image.length > 0 ? showInfo.image[0].path : '',
 		}

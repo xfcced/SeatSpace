@@ -1,4 +1,5 @@
 const prisma = require('../service/prismaClient')
+const dayjs = require('dayjs')
 
 async function getNearbyTheaters(req, res) {
 	try {
@@ -78,7 +79,7 @@ async function getShowListByTheaterId(req, res) {
 				showId: show.id,
 				showName: show.name,
 				hall: show.hall.name,
-				startTime: show.start_time,
+				startTime: dayjs(show.start_time).format('YYYY-MM-DD HH:mm'),
 				rating: show.rating.length > 0 ? show.rating[0].current_rating : 0,
 				imgUrl: show.image.length > 0 ? show.image[0].path : '',
 			}
