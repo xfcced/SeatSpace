@@ -113,8 +113,6 @@ async function getTheaterBaiscInfo(req, res) {
 			},
 		})
 
-		console.log('theater:', theater)
-
 		const resData = {
 			id: theater.id,
 			name: theater.name,
